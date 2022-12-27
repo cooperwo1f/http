@@ -50,5 +50,5 @@ fn main() {
     }
 
     items.sort_by(|a, b| a.total.partial_cmp(&b.total).unwrap());
-    items.iter().for_each(|item| println!("{0: <20}: ${1: <8} x {2: <8} {3: <80}", item.name, item.price, item.quantity, item.url));
+    items.iter().for_each(|item| println!("{0: <28}: ${1: <8} x {2: <8} {3: <80}", item.name, item.price, item.quantity, item.url));
 }
