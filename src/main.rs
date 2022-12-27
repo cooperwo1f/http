@@ -1,5 +1,5 @@
+use serde_json::Value;
 use std::env;
-use serde_json::{Value};
 
 struct Item {
     name: String,
@@ -14,7 +14,11 @@ fn main() {
 
     let search_term = &args[1];
     let limit = &args[2];
-    let url = ("https://au.rs-online.com/web/c/?limit=".to_owned() + limit + "&searchTerm=" + search_term).replace(" ", "+");
+    let url = ("https://au.rs-online.com/web/c/?limit=".to_owned()
+        + limit
+        + "&searchTerm="
+        + search_term)
+        .replace(" ", "+");
 
     let mut items: Vec<Item> = vec![];
 
@@ -37,18 +41,24 @@ fn main() {
     // println!("{:#}", json_data);
     if let Some(products) = json_data["products"].as_array() {
         for product in products {
-            items.push(
-                Item {
-                    name: product["manufacturersPartNumber"].to_string(),
-                    price: product["price"]["unitPrice"].as_f64().unwrap(),
-                    quantity: product["price"]["packSize"].as_u64().unwrap(),
-                    total: product["price"]["unitPrice"].as_f64().unwrap() * product["price"]["packSize"].as_f64().unwrap(),
-                    url: "https://au.rs-online.com".to_string() + &(product["productPath"].to_string())[1..(product["productPath"].to_string()).len() - 1],
-                }
-            );
+            items.push(Item {
+                name: product["manufacturersPartNumber"].to_string(),
+                price: product["price"]["unitPrice"].as_f64().unwrap(),
+                quantity: product["price"]["packSize"].as_u64().unwrap(),
+                total: product["price"]["unitPrice"].as_f64().unwrap()
+                    * product["price"]["packSize"].as_f64().unwrap(),
+                url: "https://au.rs-online.com".to_string()
+                    + &(product["productPath"].to_string())
+                        [1..(product["productPath"].to_string()).len() - 1],
+            });
         }
     }
 
     items.sort_by(|a, b| a.total.partial_cmp(&b.total).unwrap());
-    items.iter().for_each(|item| println!("{0: <28}: ${1: <8} x {2: <8} {3: <80}", item.name, item.price, item.quantity, item.url));
+    items.iter().for_each(|item| {
+        println!(
+            "{0: <28}: ${1: <8} x {2: <8} {3: <80}",
+            item.name, item.price, item.quantity, item.url
+        )
+    });
 }
